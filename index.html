@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<!-- Language and direction will be set by JS -->
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts (Cairo) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Link CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Title will be set by JS -->
+    <title data-i18n="pageTitle">بيتك - Baytak</title>
+</head>
+<body id="app-body">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <button id="close-menu" class="close-menu" aria-label="Close Menu">×</button>
+            <!-- User Status Area -->
+            <div id="user-auth-status" class="user-status-sidebar">
+                <!-- Content populated by JS: Welcome message & Logout OR Login/Register links -->
+                <span id="user-greeting-sidebar" style="display: none;"></span>
+                <button id="logout-btn-sidebar" class="btn btn-secondary btn-sm" style="display: none;" data-i18n="btnLogout">Logout</button>
+                <div id="guest-auth-links-sidebar" style="display: block;">
+                    <a href="#login" class="btn btn-primary btn-sm" data-i18n="btnLoginSidebar">Login</a>
+                    <a href="#register" class="btn btn-secondary btn-sm" data-i18n="btnRegisterSidebar">Register</a>
+                </div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="#home" data-i18n="navHome"><i class="fas fa-home"></i> <span>الرئيسية</span></a></li>
+                <li><a href="#favorites" data-i18n="navFavorites"><i class="fas fa-heart"></i> <span>المفضلة</span></a></li>
+                <li><a href="#post-offer" data-i18n="navPostOffer"><i class="fas fa-plus-circle"></i> <span>انشر عرض</span></a></li>
+                <li><a href="#user-page" id="nav-user-link" data-i18n="navUser"><i class="fas fa-user"></i> <span>حساب المستخدم</span></a></li>
+                <li><a href="#settings" data-i18n="navSettings"><i class="fas fa-cog"></i> <span>الإعدادات</span></a></li>
+                <li><a href="#about" data-i18n="navAbout"><i class="fas fa-info-circle"></i> <span>من نحن</span></a></li>
+                <li><a href="#contact" data-i18n="navContact"><i class="fas fa-envelope"></i> <span>تواصل معنا</span></a></li>
+                <li><a href="#policy" data-i18n="navPolicy"><i class="fas fa-file-contract"></i> <span>سياسة الاستخدام</span></a></li>
+            </ul>
+        </nav>
+        <footer class="sidebar-footer">
+            © <span id="current-year">2024</span> <span data-i18n="siteName">بيتك</span>
+        </footer>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+
+        <!-- Hamburger Menu Button (NOW VISIBLE ON ALL SIZES BY DEFAULT CSS) -->
+        <button id="menu-toggle" class="menu-toggle" aria-label="Open Menu">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- App Header -->
+        <header class="app-header">
+            <div class="logo">
+                <h1 data-i18n="siteName">بيتك</h1>
+                <span data-i18n="siteSubName">BAYTAK</span>
+            </div>
+        </header>
+
+        <!-- ======================= Sections ======================= -->
+
+        <!-- Section for Main Listing Page -->
+        <!-- *** THIS VERSION HAS THE SINGLE CONTAINER FIX APPLIED *** -->
+        <section id="home" class="page-section active-section">
+             <!-- Search and Filter Area (Remains the same) -->
+             <div class="search-filter-area">
+                 <div class="search-bar">
+                     <input type="text" id="search-input" data-i18n-placeholder="searchPlaceholder" placeholder="ابحث عن عقار...">
+                     <button id="search-button"><i class="fas fa-search"></i></button>
+                 </div>
+                 <div class="filter-options">
+                     <button id="filter-toggle" class="filter-toggle-btn" data-i18n="filterBtn">
+                         <span>فلترة</span> <i class="fas fa-filter"></i>
+                     </button>
+                     <div class="filter-dropdown" id="filter-dropdown-content">
+                         <div class="filter-group">
+                             <label for="filter-type" data-i18n="filterType">النوع:</label>
+                             <select id="filter-type">
+                                 <option value="all" data-i18n="filterAll">الكل</option>
+                                 <option value="rent" data-i18n="filterRent">إيجار</option>
+                                 <option value="sale" data-i18n="filterSale">بيع</option>
+                             </select>
+                         </div>
+                         <div class="filter-group">
+                             <label for="filter-location" data-i18n="filterLocation">الموقع:</label>
+                             <input type="text" id="filter-location">
+                             <!-- Could be a select dropdown too -->
+                         </div>
+                         <div class="filter-group">
+                             <label data-i18n="filterPrice">السعر:</label>
+                             <input type="number" id="filter-price-min" placeholder="Min">
+                             <input type="number" id="filter-price-max" placeholder="Max">
+                         </div>
+                         <button id="apply-filters-btn" class="btn btn-primary btn-sm btn-apply-filters" data-i18n="applyFiltersBtn">تطبيق</button>
+                     </div>
+                 </div>
+             </div>
+             <!-- End Search/Filter Area -->
+
+             <!-- *** General title and single container with id="listings-container" *** -->
+             <h2 data-i18n="allListingsTitle">Available Properties</h2>
+             <div class="properties-grid" id="listings-container">
+                 <p class="placeholder-text" data-i18n="loadingListings" style="display: none;">Loading listings...</p>
+             </div>
+        </section>
+
+        <!-- Section for Listing Details -->
+        <section id="listing-detail" class="page-section">
+            <h2 class="section-header-hidden" data-i18n="listingDetailPageTitle">تفاصيل العقار</h2> <!-- Hidden header for structure/accessibility -->
+            <div class="listing-detail-content">
+                <div class="listing-detail-header">
+                    <h3 id="detail-title">اسم العقار هنا</h3>
+                    <span id="detail-price">$0.00</span>
+                     <!-- Favorite button specific to detail page -->
+                     <button class="favorite-btn detail-favorite-btn" aria-label="Add to favorites">
+                        <i class="far fa-heart"></i>
+                    </button>
+                </div>
+
+                <div class="detail-image-carousel">
+                    <div class="carousel-main-image">
+                        <img id="carousel-main-img" src="images/placeholder.png" alt="Main listing image">
+                    </div>
+                    <div class="carousel-thumbnails">
+                        <!-- Thumbnails loaded by JS -->
+                    </div>
+                </div>
+
+                <div class="detail-info-grid">
+                    <div class="detail-block description-block">
+                        <h4 data-i18n="detailDescLabel">الوصف</h4>
+                        <p id="detail-description">تفاصيل وصف العقار ستظهر هنا.</p>
+                    </div>
+
+                    <div class="detail-block features-block">
+                        <h4 data-i18n="detailFeaturesLabel">المميزات</h4>
+                        <ul id="detail-features-list">
+                            <!-- Features loaded by JS -->
+                            <li><i class="fas fa-spinner fa-spin"></i> Loading...</li>
+                        </ul>
+                    </div>
+
+                    <div class="detail-block location-block">
+                        <h4 data-i18n="detailLocationLabel">الموقع</h4>
+                        <p id="detail-location">عنوان الموقع هنا</p>
+                        <div class="map-placeholder" data-i18n="mapPlaceholder">
+                            منطقة الخريطة
+                        </div>
+                    </div>
+
+                    <div class="detail-block seller-block">
+                        <h4 data-i18n="detailSellerLabel">معلومات البائع/المؤجر</h4>
+                        <p id="detail-seller-name">اسم البائع</p>
+                        <button class="btn btn-primary" data-i18n="contactSellerBtn">تواصل مع البائع</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section for Posting an Offer -->
+        <section id="post-offer" class="page-section">
+            <h2 data-i18n="postOfferPageTitle">انشر عرضك الجديد</h2>
+            <form id="post-offer-form" class="form-layout">
+                <div class="form-group">
+                    <label for="offer-title" data-i18n="offerTitleLabel">عنوان العرض</label>
+                    <input type="text" id="offer-title" name="title" required>
+                </div>
+
+                <div class="form-group inline-group">
+                    <span data-i18n="offerTypeLabel">نوع العرض:</span>
+                    <label for="offer-type-rent">
+                        <input type="radio" id="offer-type-rent" name="offerType" value="rent" checked> <span data-i18n="offerTypeRent">إيجار</span>
+                    </label>
+                    <label for="offer-type-sale">
+                        <input type="radio" id="offer-type-sale" name="offerType" value="sale"> <span data-i18n="offerTypeSale">بيع</span>
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label for="offer-price" data-i18n="offerPriceLabel">السعر</label>
+                    <input type="number" id="offer-price" name="price" required step="any" min="0">
+                </div>
+
+                 <div class="form-group">
+                    <label for="offer-description" data-i18n="offerDescLabel">الوصف التفصيلي</label>
+                    <textarea id="offer-description" name="description" rows="5" required maxlength="1000"></textarea>
+                    <div class="char-counter-container">
+                        (<span id="description-char-count">0</span>/1000)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="offer-location" data-i18n="offerLocationLabel">الموقع/العنوان</label>
+                    <input type="text" id="offer-location" name="location" required placeholder="e.g., 123 Main St, Anytown">
+                </div>
+
+                <div class="form-group">
+                    <label for="offer-prop-type" data-i18n="offerPropTypeLabel">نوع العقار:</label>
+                    <select id="offer-prop-type" name="propertyType">
+                        <option value="apartment" data-i18n="propTypeApartment">شقة</option>
+                        <option value="house" data-i18n="propTypeHouse">منزل</option>
+                        <option value="villa" data-i18n="propTypeVilla">فيلا</option>
+                        <option value="land" data-i18n="propTypeLand">أرض</option>
+                        <!-- Add more as needed -->
+                    </select>
+                </div>
+
+                <div class="form-group features-group">
+                    <span data-i18n="detailFeaturesLabel">المميزات:</span>
+                     <div class="feature-item">
+                         <label for="offer-bedrooms" data-i18n="offerBedroomsLabel">غرف نوم:</label>
+                         <input type="number" id="offer-bedrooms" name="bedrooms" min="0" value="0">
+                     </div>
+                     <div class="feature-item">
+                         <label for="offer-bathrooms" data-i18n="offerBathroomsLabel">حمامات:</label>
+                         <input type="number" id="offer-bathrooms" name="bathrooms" min="0" value="0">
+                     </div>
+                    <div class="feature-item">
+                         <label for="offer-area" data-i18n="offerAreaLabel">المساحة (م²):</label>
+                         <input type="number" id="offer-area" name="area" min="0" value="0">
+                     </div>
+                </div>
+
+                 <div class="form-group amenities-group">
+                    <span data-i18n="offerAmenitiesLabel">مرافق إضافية:</span>
+                    <label for="amenity-pool">
+                        <input type="checkbox" id="amenity-pool" name="amenities" value="pool"> <span data-i18n="amenityPool">مسبح</span>
+                    </label>
+                    <label for="amenity-garage">
+                        <input type="checkbox" id="amenity-garage" name="amenities" value="garage"> <span data-i18n="amenityGarage">جراج</span>
+                    </label>
+                    <label for="amenity-garden">
+                        <input type="checkbox" id="amenity-garden" name="amenities" value="garden"> <span data-i18n="amenityGarden">حديقة</span>
+                    </label>
+                    <!-- Add more amenities as needed -->
+                </div>
+
+                 <div class="form-group">
+                    <label id="offer-images-label" for="offer-images" class="btn btn-secondary" data-i18n="offerImagesLabel">
+                        <i class="fas fa-upload"></i> اختر صور العقار
+                    </label>
+                    <input type="file" id="offer-images" name="images" multiple accept="image/*" style="display: none;"> <!-- Hide default input -->
+                    <div id="post-image-preview" class="image-preview-area">
+                         <!-- Image previews will appear here -->
+                    </div>
+                </div>
+                 <!-- Message area for form feedback -->
+                 <div id="post-offer-message" class="message" style="margin-top: 15px; text-align: center;"></div>
+
+                <button type="submit" class="btn btn-primary" data-i18n="submitOfferBtn">أرسل العرض للمراجعة</button>
+            </form>
+        </section>
+
+
+        <!-- Section for Favorites -->
+        <section id="favorites" class="page-section">
+             <h2 data-i18n="favoritesPageTitle">Favorite Properties</h2>
+             <div class="properties-grid" id="favorites-grid">
+                <p class="placeholder-text" style="display: none;" data-i18n="noFavorites">You haven't favorited any properties yet.</p>
+             </div>
+        </section>
+
+        <!-- Section for User Account -->
+        <section id="user-page" class="page-section">
+            <h2 class="section-header-hidden" data-i18n="userPageTitle">حساب المستخدم</h2>
+
+             <div class="profile-header-block">
+                <div class="profile-pic">
+                    <img id="profile-img" src="images/default-profile.png" alt="Profile Picture">
+                    <input type="file" id="profile-pic-input" accept="image/*" style="display: none;">
+                    <button id="edit-profile-pic-btn" class="edit-profile-pic" aria-label="Edit profile picture">
+                        <i class="fas fa-camera"></i>
+                    </button>
+                </div>
+                <div class="user-info-main">
+                    <h3 id="display-username" class="username" data-i18n="usernameLabel">اسم المستخدم</h3>
+                </div>
+            </div>
+
+            <!-- User Details Block -->
+            <div class="settings-block user-details-block">
+                 <div class="settings-block-header">
+                     <h3 data-i18n="contactInfoLabel">معلومات التواصل</h3>
+                     <!-- Trigger for editing all contact fields -->
+                     <button class="icon-edit-btn" data-edit-trigger data-target-selector="#editable-fullname, #editable-phone, #editable-email" aria-label="Edit Contact Info" data-i18n-title="editOfferTooltip">
+                         <i class="fas fa-pencil-alt icon-edit"></i>
+                     </button>
+                 </div>
+                 <!-- NOTE: Use distinct IDs for editable fields -->
+                 <p id="editable-fullname">الاسم الكامل</p>
+                 <p id="editable-phone">رقم الهاتف</p>
+                 <p id="editable-email">البريد الإلكتروني</p>
+                 <div id="user-profile-message" class="message-area" style="margin-top: 10px; text-align: start;"></div>
+            </div>
+
+
+            <!-- User Offers Block -->
+            <div class="settings-block user-offers-block">
+                 <h3 data-i18n="offersLabel">عروضك</h3>
+                 <div class="managed-offer-list">
+                    <ul id="user-offer-list">
+                        <!-- User's offers will be loaded here (Example Structure) -->
+                        <!--
+                        <li data-offer-id="offer123">
+                            <span><i class="fas fa-tag"></i> Offer Title 1</span>
+                            <div class="offer-actions">
+                                <button class="btn-icon edit-offer-btn" aria-label="Edit Offer" data-i18n-title="editOfferTooltip"><i class="fas fa-edit"></i></button>
+                                <button class="btn-icon delete-offer-btn" aria-label="Delete Offer" data-i18n-title="deleteOfferTooltip"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </li>
+                         -->
+                    </ul>
+                     <!-- Message shown when the list is empty -->
+                    <p id="no-offers-message" class="placeholder-text" style="display: none;" data-i18n="noUserOffers">
+                         لم تنشر أي عروض بعد.
+                    </p>
+                 </div>
+            </div>
+
+        </section>
+
+        <!-- Section for Settings -->
+        <section id="settings" class="page-section">
+            <h2 class="section-header-hidden" data-i18n="settingsPageTitle">الإعدادات</h2>
+
+            <div class="settings-options">
+                <div class="settings-item">
+                    <span data-i18n="languageLabel">اللغة</span>
+                    <button id="language-toggle" class="btn btn-secondary btn-sm">
+                        <!-- Text set by JS -->
+                        <span data-i18n="langToggleText">English</span>
+                    </button>
+                </div>
+                 <div class="settings-item">
+                    <span data-i18n="darkModeLabel">الوضع المظلم</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                 </div>
+                 <div class="settings-item">
+                    <span data-i18n="notificationsLabel">الاشعارات</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="notificationsToggle" checked> <!-- Example -->
+                        <span class="slider round"></span>
+                    </label>
+                 </div>
+                 <div class="settings-item">
+                    <span data-i18n="cookiesLabel">COOKIES</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="cookiesToggle" checked> <!-- Example -->
+                        <span class="slider round"></span>
+                    </label>
+                 </div>
+                 <div class="settings-item">
+                    <span data-i18n="showNameLabel">اظهار الاسم عند النشر</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showNameToggle" checked> <!-- Example -->
+                        <span class="slider round"></span>
+                    </label>
+                 </div>
+                 <div class="settings-item">
+                    <span data-i18n="showContactLabel">اظهار معلومات التواصل</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showContactToggle"> <!-- Example -->
+                        <span class="slider round"></span>
+                    </label>
+                 </div>
+                 <div class="settings-item">
+                    <span data-i18n="showOldOffersLabel">اظهار العروض القديمه</span>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="showOldOffersToggle"> <!-- Example -->
+                        <span class="slider round"></span>
+                    </label>
+                 </div>
+            </div>
+        </section>
+
+
+        <!-- Section for About Us -->
+        <section id="about" class="page-section">
+             <div class="text-content-section">
+                 <div class="section-header-block">
+                     <h2 data-i18n="aboutTitle">من نحن</h2>
+                     <span data-i18n="aboutSubTitle">WHO ARE WE</span>
+                 </div>
+                 <p data-i18n="aboutDesc1">
+                     متخصصين الهبد نفعل لك اي شي ووقفه التبجيله كاد شات جبت ان يكون مبرمجا.
+                 </p>
+                 <div class="team-member">
+                    <div class="profile-pic small-pic">
+                        <img src="images/moayd.jpg" alt="Moayd Picture">
+                    </div>
+                     <h4 data-i18n="moaydName">مؤيد</h4>
+                     <p data-i18n="moaydDesc">طالب هندسة حاسوب, مصمم جرافيك, مبتدئ في عالم البرمجة, طموح, شغوف.</p>
+                 </div>
+                 <div class="team-member">
+                    <div class="profile-pic small-pic">
+                        <img src="images/akram.jpg" alt="Akram Picture">
+                    </div>
+                     <h4 data-i18n="akramName">اكرم</h4>
+                     <p data-i18n="akramDesc">طالب, يد بت عمو + صاحب مؤيد هو زاتو ما عارف نفسو بعمل شنو.</p>
+                 </div>
+             </div>
+        </section>
+
+
+        <!-- Section for Contact Us -->
+        <section id="contact" class="page-section">
+            <div class="text-content-section">
+                 <div class="section-header-block">
+                     <h2 data-i18n="contactTitle">تواصل معنا</h2>
+                     <span data-i18n="contactSubTitle">CONTACT US</span>
+                 </div>
+                 <p data-i18n="contactDesc">
+                     تواصل معنا في حال واجهتك أي مشكلة في الموقع او للابلاغ عن ثغرات.
+                 </p>
+                 <div class="contact-info">
+                     <h3><i class="fas fa-headset"></i> <span data-i18n="contactServer">24/7 SERVER</span></h3>
+                     <p><i class="fas fa-phone"></i> <a href="tel:+249XXXXXXXXX">+249 XXX XXX XXX</a></p>
+                     <p><i class="fas fa-envelope"></i> <a href="mailto:info@baytak.com">info@baytak.com</a></p>
+                 </div>
+                 <p class="notice" data-i18n="contactNotice">
+                     يرجى الملاحظة يتم تسجيل جميع المكالمات
+                 </p>
+            </div>
+        </section>
+
+        <!-- Section for Use Policy -->
+        <section id="policy" class="page-section">
+            <div class="text-content-section">
+                 <div class="section-header-block">
+                     <h2 data-i18n="policyTitle">سياسة الاستخدام</h2>
+                     <span data-i18n="policySubTitle">USE POLICY</span>
+                 </div>
+                 <p data-i18n="policyDesc1">
+                     عاين الملخص بتاع الكلام ما عندك اي حاجة عندنا , تستعمل تطبيقنا او موقعنا تحت مسؤليتك نتسرق , تتنهب , مافي زول بشتغل بيك , مافي زول ماسكك من أضانك قال ليك استعمل موقعنا شافع انت ؟ يقولو ليك تعال شوف الموقع الفلاني طوالي تقوم تخش ؟ والله بليد كيف المهم الكلام دا واضح , شغل محاكم وبتاع دا ما بنفع معانا
+                 </p>
+                 <p data-i18n="policyDesc2">
+                     القروش ماسكها مؤيد والمسائل القانونية عند اكرم يعني عندكم اي مشكلة امشو لي اكرم طوالي ما بقصر
+                 </p>
+            </div>
+        </section>
+
+        <!-- NEW: Login Section -->
+        <section id="login" class="page-section auth-section">
+            <div class="text-content-section auth-container">
+                <h2 data-i18n="loginTitle">Login</h2>
+                <form id="login-form-section" class="form-layout auth-form">
+                    <div class="form-group">
+                        <label for="login-email-section" data-i18n="emailLabel">Email:</label>
+                        <input type="email" id="login-email-section" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password-section" data-i18n="passwordLabel">Password:</label>
+                        <input type="password" id="login-password-section" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary auth-button" data-i18n="btnLoginAction">Login</button>
+                    <p data-i18n="dontHaveAccount">Don't have an account? <a href="#register" data-i18n="registerLink">Register here</a></p>
+                    <div id="login-message-section" class="message-area" style="margin-top: 15px;"></div>
+                </form>
+            </div>
+        </section>
+        <!-- NEW: Register Section -->
+        <section id="register" class="page-section auth-section">
+            <div class="text-content-section auth-container">
+                <h2 data-i18n="registerTitle">Register</h2>
+                <form id="register-form-section" class="form-layout auth-form">
+                    <div class="form-group">
+                        <label for="register-username-section" data-i18n="usernameLabel">Username:</label>
+                        <input type="text" id="register-username-section" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email-section" data-i18n="emailLabel">Email:</label>
+                        <input type="email" id="register-email-section" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password-section" data-i18n="passwordLabel">Password:</label>
+                        <input type="password" id="register-password-section" name="password" required minlength="6">
+                        <small data-i18n="passwordHint">Minimum 6 characters</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="register-phone-section" data-i18n="phoneLabel">Phone Number (Optional):</label>
+                        <input type="tel" id="register-phone-section" name="phone" pattern="[0-9\+\s\-\(\)]*" title="Please enter a valid phone number">
+                    </div>
+                    <button type="submit" class="btn btn-primary auth-button" data-i18n="btnRegisterAction">Register</button>
+                    <p data-i18n="alreadyHaveAccount">Already have an account? <a href="#login" data-i18n="loginLink">Login here</a></p>
+                    <div id="register-message-section" class="message-area" style="margin-top: 15px;"></div>
+                </form>
+            </div>
+        </section>
+
+    </main> <!-- End Main Content -->
+
+    <!-- NEW: Firebase v9 Compatibility SDK Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+    <!-- Add other compat SDKs if needed -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script> -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script> -->
+
+    <!-- Your existing script tag (NO type="module") -->
+    <script src="script.js"></script>
+</body>
+</html>
